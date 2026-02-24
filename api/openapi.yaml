@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 info:
   title: Acme API
-  version: "1.4.0"
+  version: "2.0.0"
 paths:
   /users/{id}:
     get:
@@ -99,8 +99,6 @@ paths:
     post:
       summary: Charge payment
       operationId: chargePayment
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -114,21 +112,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaymentResult"
-  /payments/refund:
-    post:
-      summary: Refund payment
-      operationId: refundPayment
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RefundRequest"
-      responses:
-        "200":
-          description: Refund processed
   /webhooks/subscribe:
     post:
       summary: Subscribe to webhooks
@@ -144,6 +127,7 @@ paths:
               required:
                 - url
                 - events
+                - secret
               properties:
                 url:
                   type: string
@@ -151,16 +135,33 @@ paths:
                   type: array
                   items:
                     type: string
+                secret:
+                  type: string
       responses:
         "201":
           description: Subscribed
-  /internal/health:
-    get:
-      summary: Health check
-      operationId: healthCheck
+  /users/{id}/avatar:
+    put:
+      summary: Upload user avatar
+      operationId: uploadAvatar
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
       responses:
         "200":
-          description: OK
+          description: Avatar updated
 components:
   securitySchemes:
     bearerAuth:
@@ -173,29 +174,37 @@ components:
         - id
         - email
         - name
+        - role
       properties:
         id:
           type: string
         email:
-          type: string
+          type: object
+          properties:
+            address:
+              type: string
+            verified:
+              type: boolean
         name:
-          type: string
-        phone:
           type: string
         created_at:
           type: string
           format: date-time
+        role:
+          type: string
+          enum: [admin, user, moderator]
     CreateUserRequest:
       type: object
       required:
         - email
         - name
+        - role
       properties:
         email:
           type: string
         name:
           type: string
-        phone:
+        role:
           type: string
     Order:
       type: object
@@ -210,13 +219,13 @@ components:
         user_id:
           type: string
         total:
-          type: number
+          type: string
         currency:
           type: string
           default: "USD"
         status:
           type: string
-          enum: [pending, confirmed, shipped, delivered]
+          enum: [pending, confirmed, delivered]
         items:
           type: array
           items:
@@ -239,6 +248,7 @@ components:
       required:
         - user_id
         - items
+        - shipping_address
       properties:
         user_id:
           type: string
@@ -246,6 +256,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrderItem"
+        shipping_address:
+          type: string
     ChargeRequest:
       type: object
       required:
