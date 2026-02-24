@@ -27,3 +27,4 @@ function processCheckout(cart) {
 module.exports = { processCheckout };
 // trigger
 // flag scan trigger 1771972309
+// v3 flag fix trigger 1771972703
