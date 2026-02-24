@@ -42,3 +42,4 @@ freeze_periods:
 docs_paths:
   - "docs/*"
   - "README.md"
+fun_mode: true
