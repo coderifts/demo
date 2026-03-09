@@ -29,7 +29,7 @@ A payments API is consumed by AI agents via MCP tool bindings. The API maintaine
 ### Option 1: CodeRifts REST API
 
 ```bash
-curl -X POST https://api.coderifts.com/api/v1/diff \
+curl -X POST https://app.coderifts.com/api/v1/diff \
   -H "Content-Type: application/json" \
   -d '{
     "old_spec": "'"$(cat base-spec.yaml)"'",
