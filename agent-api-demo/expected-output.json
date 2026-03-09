@@ -1,0 +1,77 @@
+{
+  "description": "Expected CodeRifts analysis output for the agent-api-demo breaking changes. This shows the Agent Impact section that would appear in a PR comment.",
+  "breaking_changes": [
+    {
+      "change": "OAuth scope 'refunds:process' removed from global security",
+      "severity": "breaking",
+      "agent_impact": {
+        "risk": "CRITICAL",
+        "impact": "Agent loses refunds:process capability — tool calls requiring refunds:process will fail silently"
+      }
+    },
+    {
+      "change": "Endpoint GET /webhooks removed",
+      "severity": "breaking",
+      "agent_impact": {
+        "risk": "CRITICAL",
+        "impact": "Agents hardcoding `/webhooks` will call a dead endpoint"
+      }
+    },
+    {
+      "change": "Response field 'receipt_url' removed from Payment schema",
+      "severity": "breaking",
+      "agent_impact": {
+        "risk": "HIGH",
+        "impact": "Agents reading `receipt_url` will receive `undefined` — no runtime warning"
+      }
+    },
+    {
+      "change": "Enum value 'refunded' removed from status parameter",
+      "severity": "breaking",
+      "agent_impact": {
+        "risk": "MEDIUM",
+        "impact": "Strict agents with switch-case validation may break on removed value `refunded`"
+      }
+    },
+    {
+      "change": "Required field 'idempotency_key' added to POST /payments request body",
+      "severity": "breaking",
+      "agent_impact": {
+        "risk": "HIGH",
+        "impact": "Agents not sending `idempotency_key` will receive 422 errors immediately"
+      }
+    }
+  ],
+  "risk_score": {
+    "overall": 82,
+    "dimensions": {
+      "revenue_impact": 22,
+      "blast_radius": 20,
+      "app_compatibility": 22,
+      "security_impact": 18
+    },
+    "label": "HIGH"
+  },
+  "mcp_tool_impact": {
+    "tools_affected": 4,
+    "tools_total": 5,
+    "affected_tools": [
+      {
+        "tool": "list_payments",
+        "reason": "Enum value 'refunded' removed from status filter"
+      },
+      {
+        "tool": "create_payment",
+        "reason": "New required field 'idempotency_key' — tool input schema outdated"
+      },
+      {
+        "tool": "create_refund",
+        "reason": "OAuth scope changed from 'refunds:process' to 'admin:refunds'"
+      },
+      {
+        "tool": "list_webhooks",
+        "reason": "Endpoint removed — tool calls will fail with 404"
+      }
+    ]
+  }
+}

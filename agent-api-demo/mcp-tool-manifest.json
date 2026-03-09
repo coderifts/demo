@@ -1,0 +1,108 @@
+{
+  "schema_version": "2024-11-05",
+  "name": "payments-api",
+  "description": "MCP tool bindings for the Agent Payments API. Used by AI agents to process payments, issue refunds, and manage webhooks.",
+  "tools": [
+    {
+      "name": "list_payments",
+      "description": "List all payments with optional status filter. Returns paginated results.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed", "refunded"],
+            "description": "Filter by payment status"
+          }
+        }
+      },
+      "annotations": {
+        "openapi_operation": "listPayments",
+        "openapi_path": "GET /payments",
+        "required_scopes": ["payments:read"]
+      }
+    },
+    {
+      "name": "create_payment",
+      "description": "Create a new payment. Requires amount and currency.",
+      "inputSchema": {
+        "type": "object",
+        "required": ["amount", "currency"],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Payment amount"
+          },
+          "currency": {
+            "type": "string",
+            "description": "ISO 4217 currency code"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Arbitrary key-value metadata"
+          }
+        }
+      },
+      "annotations": {
+        "openapi_operation": "createPayment",
+        "openapi_path": "POST /payments",
+        "required_scopes": ["payments:write"]
+      }
+    },
+    {
+      "name": "get_payment",
+      "description": "Get payment details by ID. Returns status, amount, receipt_url, and metadata.",
+      "inputSchema": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Payment ID"
+          }
+        }
+      },
+      "annotations": {
+        "openapi_operation": "getPayment",
+        "openapi_path": "GET /payments/{id}",
+        "required_scopes": ["payments:read"]
+      }
+    },
+    {
+      "name": "create_refund",
+      "description": "Process a refund for a completed payment. Requires refunds:process scope.",
+      "inputSchema": {
+        "type": "object",
+        "required": ["payment_id", "reason"],
+        "properties": {
+          "payment_id": {
+            "type": "string",
+            "description": "ID of the payment to refund"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for the refund"
+          }
+        }
+      },
+      "annotations": {
+        "openapi_operation": "createRefund",
+        "openapi_path": "POST /refunds",
+        "required_scopes": ["refunds:process"]
+      }
+    },
+    {
+      "name": "list_webhooks",
+      "description": "List all active webhook subscriptions for the account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "openapi_operation": "listWebhooks",
+        "openapi_path": "GET /webhooks",
+        "required_scopes": ["payments:read"]
+      }
+    }
+  ]
+}

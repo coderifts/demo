@@ -1,0 +1,230 @@
+openapi: "3.1.0"
+info:
+  title: Agent Payments API
+  description: >
+    A payments API consumed by AI agents via MCP tool calls.
+    This is the base version — before breaking changes are introduced.
+  version: "1.4.0"
+  contact:
+    name: CodeRifts
+    url: https://coderifts.com
+
+servers:
+  - url: https://api.example.com/v1
+
+security:
+  - oauth2:
+      - payments:read
+      - payments:write
+      - refunds:process
+
+paths:
+  /payments:
+    get:
+      operationId: listPayments
+      summary: List all payments
+      description: Returns a paginated list of payments. Agents use this to reconcile transactions.
+      tags:
+        - Payments
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - pending
+              - completed
+              - failed
+              - refunded
+      responses:
+        "200":
+          description: A list of payments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Payment"
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+
+    post:
+      operationId: createPayment
+      summary: Create a new payment
+      description: Initiates a payment. Agents call this via MCP tool binding.
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - currency
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  description: Payment amount
+                currency:
+                  type: string
+                  description: ISO 4217 currency code
+                metadata:
+                  type: object
+                  description: Arbitrary key-value metadata
+      responses:
+        "201":
+          description: Payment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  /payments/{id}:
+    get:
+      operationId: getPayment
+      summary: Get payment details
+      description: Retrieve a single payment by ID. Agents read the `status` and `receipt_url` fields.
+      tags:
+        - Payments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  /refunds:
+    post:
+      operationId: createRefund
+      summary: Process a refund
+      description: Issues a refund for a completed payment. Requires `refunds:process` scope.
+      tags:
+        - Refunds
+      security:
+        - oauth2:
+            - refunds:process
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - payment_id
+                - reason
+              properties:
+                payment_id:
+                  type: string
+                reason:
+                  type: string
+      responses:
+        "201":
+          description: Refund created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Refund"
+
+  /webhooks:
+    get:
+      operationId: listWebhooks
+      summary: List webhook subscriptions
+      description: Returns all active webhook subscriptions for the account.
+      tags:
+        - Webhooks
+      responses:
+        "200":
+          description: List of webhooks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Webhook"
+
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.example.com/token
+          scopes:
+            payments:read: Read payment data
+            payments:write: Create and modify payments
+            refunds:process: Process refunds
+
+  schemas:
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        amount:
+          type: number
+          format: float
+        currency:
+          type: string
+        status:
+          type: string
+          enum:
+            - pending
+            - completed
+            - failed
+            - refunded
+        receipt_url:
+          type: string
+          format: uri
+          description: URL to the payment receipt PDF
+        created_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    Refund:
+      type: object
+      properties:
+        id:
+          type: string
+        payment_id:
+          type: string
+        amount:
+          type: number
+          format: float
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean

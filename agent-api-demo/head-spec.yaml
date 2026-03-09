@@ -1,0 +1,205 @@
+openapi: "3.1.0"
+info:
+  title: Agent Payments API
+  description: >
+    A payments API consumed by AI agents via MCP tool calls.
+    This version introduces 3 breaking changes that affect agent workflows.
+  version: "2.0.0"
+  contact:
+    name: CodeRifts
+    url: https://coderifts.com
+
+servers:
+  - url: https://api.example.com/v2
+
+security:
+  - oauth2:
+      - payments:read
+      - payments:write
+      # BREAKING CHANGE 1: refunds:process scope removed
+      # Agents with cached OAuth tokens lose refund capability
+
+paths:
+  /payments:
+    get:
+      operationId: listPayments
+      summary: List all payments
+      description: Returns a paginated list of payments. Agents use this to reconcile transactions.
+      tags:
+        - Payments
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - pending
+              - completed
+              - failed
+              # BREAKING CHANGE 2: 'refunded' enum value removed
+              # Agents with switch-case validation on status will break
+      responses:
+        "200":
+          description: A list of payments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Payment"
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+
+    post:
+      operationId: createPayment
+      summary: Create a new payment
+      description: Initiates a payment. Agents call this via MCP tool binding.
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - currency
+                - idempotency_key  # New required field — agents not sending this get 422
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  description: Payment amount
+                currency:
+                  type: string
+                  description: ISO 4217 currency code
+                idempotency_key:
+                  type: string
+                  description: Unique key to prevent duplicate payments
+                metadata:
+                  type: object
+                  description: Arbitrary key-value metadata
+      responses:
+        "201":
+          description: Payment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  /payments/{id}:
+    get:
+      operationId: getPayment
+      summary: Get payment details
+      description: Retrieve a single payment by ID. Agents read the `status` field.
+      tags:
+        - Payments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  # /refunds endpoint kept but scope changed
+  /refunds:
+    post:
+      operationId: createRefund
+      summary: Process a refund
+      description: Issues a refund for a completed payment. Now requires admin:refunds scope.
+      tags:
+        - Refunds
+      security:
+        - oauth2:
+            - admin:refunds  # Changed from refunds:process
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - payment_id
+                - reason
+              properties:
+                payment_id:
+                  type: string
+                reason:
+                  type: string
+      responses:
+        "201":
+          description: Refund created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Refund"
+
+  # /webhooks endpoint REMOVED — BREAKING CHANGE 3
+  # Agents calling GET /webhooks will hit a dead endpoint
+
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.example.com/token
+          scopes:
+            payments:read: Read payment data
+            payments:write: Create and modify payments
+            admin:refunds: Process refunds (admin level)
+
+  schemas:
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        amount:
+          type: number
+          format: float
+        currency:
+          type: string
+        status:
+          type: string
+          enum:
+            - pending
+            - completed
+            - failed
+            # 'refunded' removed
+        # receipt_url field REMOVED — agents reading this get undefined
+        created_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    Refund:
+      type: object
+      properties:
+        id:
+          type: string
+        payment_id:
+          type: string
+        amount:
+          type: number
+          format: float
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
