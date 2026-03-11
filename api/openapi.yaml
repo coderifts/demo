@@ -403,6 +403,28 @@ components:
         status:
           type: string
           description: "Payment status (success, declined, pending)."
+    TokenResponse:
+      type: object
+      description: "OAuth2 token response returned by the /auth/token endpoint."
+      required:
+        - access_token
+        - token_type
+        - expires_in
+      properties:
+        access_token:
+          type: string
+          description: "Bearer access token for API authentication."
+        refresh_token:
+          type: string
+          description: "Refresh token for obtaining new access tokens without re-authentication."
+        token_type:
+          type: string
+          default: "Bearer"
+          description: "Token type (always Bearer)."
+        expires_in:
+          type: integer
+          default: 3600
+          description: "Token lifetime in seconds."
     RefundRequest:
       type: object
       description: "Request body for initiating a payment refund."
