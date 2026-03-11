@@ -288,6 +288,7 @@ components:
           description: "User's display name."
         phone:
           type: string
+          nullable: true
           description: "User's phone number in E.164 format."
         created_at:
           type: string
