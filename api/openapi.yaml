@@ -356,7 +356,7 @@ components:
           type: integer
           description: "Number of units ordered."
         price:
-          type: number
+          type: integer
           description: "Unit price at time of order."
     CreateOrderRequest:
       type: object
@@ -439,5 +439,5 @@ components:
           type: string
           description: "Reason for the refund request."
         amount:
-          type: number
+          type: integer
           description: "Partial refund amount. Omit for full refund."
