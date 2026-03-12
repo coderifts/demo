@@ -4,7 +4,7 @@ This repository demonstrates [CodeRifts](https://coderifts.com) — an API contr
 
 ## See It in Action
 
-**[View the Demo PR →](https://github.com/coderifts/demo/pull/1)**
+**[View the Demo PR →](https://github.com/coderifts/demo/pull/2)**
 
 The PR contains an OpenAPI schema change that triggers a full governance report: risk score, breaking change detection, security analysis, auto-changelog, and migration cost estimate.
 
