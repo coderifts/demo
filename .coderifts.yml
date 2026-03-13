@@ -1,7 +1,7 @@
 schema:
   - api/openapi.yaml
 fail_on_breaking: true
-comment_mode: compact
+comment_mode: full
 policy:
   max_breaking_changes: 3
   no_delete_endpoints: true
