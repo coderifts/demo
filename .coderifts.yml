@@ -1,15 +1,13 @@
 schema:
   - api/openapi.yaml
-
 fail_on_breaking: true
-
+comment_mode: compact
 policy:
   max_breaking_changes: 3
   no_delete_endpoints: true
   no_delete_required_fields: true
   require_deprecation_before_removal: true
   require_version_bump_on_breaking: true
-
 domains:
   - name: payments
     paths: ["/payments/*"]
@@ -22,23 +20,19 @@ domains:
   - name: webhooks
     paths: ["/webhooks/*"]
     sensitivity: webhook
-
 app_versions:
   - name: "iOS 3.2"
     api_version: "v1"
   - name: "Android 4.0"
     api_version: "v1"
-
 approval_matrix:
   required_field_removal: architect_approval
   response_type_change: senior_review
   critical_domain_breaking: cto_approval
-
 freeze_periods:
   - start: "2026-11-25"
     end: "2026-12-02"
     reason: "Black Friday"
-
 docs_paths:
   - "docs/*"
   - "README.md"
