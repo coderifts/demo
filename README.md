@@ -43,3 +43,4 @@ Full integration docs: [coderifts.com/integrations/](https://coderifts.com/integ
 # final verification - 2026-03-14T22:35:22Z
 # debug marker test - 2026-03-14T22:42:37Z
 # enhanced debug - 2026-03-14T22:46:58Z
+# error debug - 2026-03-14T22:51:38Z
