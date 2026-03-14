@@ -41,3 +41,4 @@ Full integration docs: [coderifts.com/integrations/](https://coderifts.com/integ
 # debug logging - 2026-03-14T22:24:58Z
 # ledger fix deployed - 2026-03-14T22:31:16Z
 # final verification - 2026-03-14T22:35:22Z
+# debug marker test - 2026-03-14T22:42:37Z
