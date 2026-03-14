@@ -38,3 +38,4 @@ Full integration docs: [coderifts.com/integrations/](https://coderifts.com/integ
 # Policy webhook fix verification - 2026-03-14T22:12:54Z
 # Policy fix deployed - 2026-03-14T22:16:26Z
 # v23 deployed - 2026-03-14T22:21:06Z
+# debug logging - 2026-03-14T22:24:58Z
