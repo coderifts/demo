@@ -1,0 +1,11 @@
+version: 1
+policy:
+  dry_run: false
+  default_action: allow
+rules:
+  - id: block-endpoint-removal
+    condition: endpoint_removed
+    action: block
+  - id: warn-high-risk
+    condition: risk_score >= 80
+    action: warn
