@@ -37,3 +37,7 @@ docs_paths:
   - "docs/*"
   - "README.md"
 fun_mode: true
+notifications:
+  slack:
+    webhook_url: "https://hooks.slack.com/services/test/test/test"
+    events: [block]
