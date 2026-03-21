@@ -2,7 +2,7 @@ openapi: "3.0.3"
 info:
   title: Acme API
   description: "The Acme API provides programmatic access to user management, order processing, payment handling, and webhook integrations for the Acme platform."
-  version: "1.4.0"
+  version: "1.5.0"
   contact:
     name: Acme API Team
     email: api@acme.example.com
@@ -38,7 +38,6 @@ paths:
                 id: "usr_abc123"
                 email: "jane@example.com"
                 name: "Jane Doe"
-                phone: "+1-555-0100"
                 created_at: "2025-01-15T10:30:00Z"
         "404":
           description: User not found
@@ -63,7 +62,6 @@ paths:
             example:
               email: "jane@example.com"
               name: "Jane Doe"
-              phone: "+1-555-0100"
       responses:
         "201":
           description: User created successfully
@@ -286,10 +284,6 @@ components:
         name:
           type: string
           description: "User's display name."
-        phone:
-          type: string
-          nullable: true
-          description: "User's phone number in E.164 format."
         created_at:
           type: string
           format: date-time
@@ -307,9 +301,6 @@ components:
         name:
           type: string
           description: "Display name for the new account."
-        phone:
-          type: string
-          description: "Optional phone number."
     Order:
       type: object
       description: "Represents a customer order with line items and status."
@@ -334,7 +325,7 @@ components:
           description: "ISO 4217 currency code."
         status:
           type: string
-          enum: [pending, confirmed, shipped, delivered]
+          enum: [pending, confirmed, shipped]
           description: "Current order fulfillment status."
         items:
           type: array
@@ -392,7 +383,7 @@ components:
           description: "ISO 4217 currency code."
     PaymentResult:
       type: object
-      description: "Result of a payment processing operation."
+          description: "Result of a payment processing operation."
       required:
         - transaction_id
         - status
