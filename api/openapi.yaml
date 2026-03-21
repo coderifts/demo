@@ -383,7 +383,7 @@ components:
           description: "ISO 4217 currency code."
     PaymentResult:
       type: object
-          description: "Result of a payment processing operation."
+      description: "Result of a payment processing operation."
       required:
         - transaction_id
         - status
