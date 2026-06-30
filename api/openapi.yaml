@@ -271,6 +271,16 @@ paths:
       responses:
         "200":
           description: Metrics returned
+  /internal/ping:
+    get:
+      summary: Ping
+      description: "Lightweight liveness ping. Additive endpoint to re-trigger governance analysis on the fixed build."
+      operationId: ping
+      tags:
+        - Internal
+      responses:
+        "200":
+          description: pong
 components:
   securitySchemes:
     bearerAuth:
