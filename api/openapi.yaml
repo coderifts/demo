@@ -251,6 +251,16 @@ paths:
       responses:
         "200":
           description: Service is healthy
+  /internal/version:
+    get:
+      summary: Version info
+      description: "Returns the current API build version and commit. Additive endpoint used to verify governance tooling on additive (non-breaking) changes."
+      operationId: getVersion
+      tags:
+        - Internal
+      responses:
+        "200":
+          description: Version information returned
 components:
   securitySchemes:
     bearerAuth:
