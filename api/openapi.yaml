@@ -261,6 +261,16 @@ paths:
       responses:
         "200":
           description: Version information returned
+  /internal/metrics:
+    get:
+      summary: Runtime metrics
+      description: "Returns runtime metrics (request counts, latency percentiles). Additive endpoint to re-trigger governance analysis after the token-cost wiring fix deploy."
+      operationId: getMetrics
+      tags:
+        - Internal
+      responses:
+        "200":
+          description: Metrics returned
 components:
   securitySchemes:
     bearerAuth:
