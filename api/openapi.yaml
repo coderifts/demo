@@ -208,6 +208,18 @@ paths:
           description: Refund processed
         "404":
           description: Transaction not found
+  /payments/capture:
+    post:
+      summary: Capture payment
+      description: "Captures a previously authorized payment. Additive (non-breaking) high-criticality payments operation to exercise the Neural Hotspot section alongside Token Cost and Verdict Core."
+      operationId: capturePayment
+      tags:
+        - Payments
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Payment captured
   /webhooks/subscribe:
     post:
       summary: Subscribe to webhooks
