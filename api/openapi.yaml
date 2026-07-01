@@ -271,6 +271,7 @@ components:
   schemas:
     User:
       description: "Represents a user account in the Acme platform."
+      type: object
       required:
         - id
         - email
