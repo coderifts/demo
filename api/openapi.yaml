@@ -270,7 +270,6 @@ components:
             users:admin: "Manage user accounts"
   schemas:
     User:
-      type: object
       description: "Represents a user account in the Acme platform."
       required:
         - id
