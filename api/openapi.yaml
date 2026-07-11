@@ -11,6 +11,26 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 paths:
+  /refunds/{id}:
+    get:
+      summary: Get refund by ID
+      description: "Retrieves a single refund by its identifier."
+      operationId: getRefund
+      tags:
+        - Payments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Refund"
   /users/{id}:
     get:
       summary: Get user by ID
