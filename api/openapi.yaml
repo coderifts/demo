@@ -13,7 +13,7 @@ info:
 paths:
   /refunds/{id}:
     get:
-      summary: Get refund by ID (retry)
+      summary: Get refund by ID (retry) (retry)
       description: "Retrieves a single refund by its identifier."
       operationId: getRefund
       tags:
