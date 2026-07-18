@@ -4,7 +4,7 @@ This repository demonstrates [CodeRifts](https://coderifts.com) — an API contr
 
 ## See It in Action
 
-**[View the Demo PR →](https://github.com/coderifts/demo/pull/2)**
+**[View the Demo PR →](https://github.com/coderifts/demo/pull/4)**
 
 The PR contains an OpenAPI schema change that triggers a full governance report: risk score, breaking change detection, security analysis, auto-changelog, and migration cost estimate.
 
@@ -20,8 +20,8 @@ The PR contains an OpenAPI schema change that triggers a full governance report:
 |---|---|
 | GitHub App | Zero-config, one-click install |
 | GitHub Actions | `uses: coderifts/action@v1` |
-| GitLab CI | CI/CD Catalog component |
-| Bitbucket Pipelines | Docker pipe |
+| GitLab CI | CI/CD Catalog component (beta - REST fallback available) |
+| Bitbucket Pipelines | Docker pipe (beta - REST fallback available) |
 | REST API | Bearer token, any CI/CD system |
 | CLI | `npx coderifts diff` |
 
