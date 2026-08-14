@@ -241,16 +241,6 @@ paths:
           description: Webhook subscription created
         "400":
           description: Invalid webhook URL or events
-  /internal/health:
-    get:
-      summary: Health check
-      description: "Returns the current health status of the API. Used for monitoring and load balancer health checks."
-      operationId: healthCheck
-      tags:
-        - Internal
-      responses:
-        "200":
-          description: Service is healthy
 components:
   securitySchemes:
     bearerAuth:
