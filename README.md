@@ -1,6 +1,6 @@
 # CodeRifts Demo
 
-This repository demonstrates [CodeRifts](https://coderifts.com) — an API contract enforcement engine that catches breaking changes on every pull request. Works with GitHub, GitLab, Bitbucket, and any CI/CD pipeline.
+This repository demonstrates [CodeRifts](https://coderifts.com) — an API contract enforcement engine that catches breaking changes on every pull request.
 
 ## See It in Action
 
