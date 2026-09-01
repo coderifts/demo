@@ -39,6 +39,12 @@ freeze_periods:
     end: "2026-12-02"
     reason: "Black Friday"
 
+cost:
+  engineer_rate: 150          # $/hour (industry-standard senior rate)
+  average_migration_hours: 40 # per breaking change
+  testing_multiplier: 1.5     # testing is 1.5x development
+  currency: USD
+
 docs_paths:
   - "docs/*"
   - "README.md"
