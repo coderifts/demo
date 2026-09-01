@@ -1,0 +1,22 @@
+name: contract-gate
+
+on: pull_request
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  contract-gate-action:
+    name: contract-gate (Action)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # base..head must be available locally; the gate derives artifacts
+          # from the real diff rather than from the event payload.
+          fetch-depth: 0
+      - uses: coderifts/contract-gate@1fae5d2bb2b52e1e1b745e649eab8834eac45645 # v0.8.0
+        with:
+          api-key: ${{ secrets.CODERIFTS_API_KEY }}
+          check-name: "CodeRifts / contract-gate (Action)"
