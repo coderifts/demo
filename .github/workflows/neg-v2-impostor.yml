@@ -1,0 +1,21 @@
+name: neg-v2-impostor
+
+on: workflow_dispatch
+
+permissions:
+  checks: write
+
+jobs:
+  impostor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post a SUCCESS under the required name, as the generic Actions issuer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.inputs.head_sha }}
+        run: |
+          curl -sS -X POST "$GITHUB_API_URL/repos/${{ github.repository }}/check-runs" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "{\"name\":\"CodeRifts / contract-gate\",\"head_sha\":\"$HEAD_SHA\",\"status\":\"completed\",\"conclusion\":\"success\",\"output\":{\"title\":\"IMPOSTOR — not the gate\",\"summary\":\"Posted by a generic Actions workflow (15368) under the required name.\"}}"
