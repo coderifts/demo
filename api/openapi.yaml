@@ -208,6 +208,18 @@ paths:
           description: Refund processed
         "404":
           description: Transaction not found
+  /payments/capture:
+    post:
+      summary: Capture payment
+      description: "Captures a previously authorized payment. Additive (non-breaking) high-criticality payments operation to exercise the Neural Hotspot section alongside Token Cost and Verdict Core."
+      operationId: capturePayment
+      tags:
+        - Payments
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Payment captured
   /webhooks/subscribe:
     post:
       summary: Subscribe to webhooks
@@ -251,6 +263,36 @@ paths:
       responses:
         "200":
           description: Service is healthy
+  /internal/version:
+    get:
+      summary: Version info
+      description: "Returns the current API build version and commit. Additive endpoint used to verify governance tooling on additive (non-breaking) changes."
+      operationId: getVersion
+      tags:
+        - Internal
+      responses:
+        "200":
+          description: Version information returned
+  /internal/metrics:
+    get:
+      summary: Runtime metrics
+      description: "Returns runtime metrics (request counts, latency percentiles). Additive endpoint to re-trigger governance analysis after the token-cost wiring fix deploy."
+      operationId: getMetrics
+      tags:
+        - Internal
+      responses:
+        "200":
+          description: Metrics returned
+  /internal/ping:
+    get:
+      summary: Ping
+      description: "Lightweight liveness ping. Additive endpoint to re-trigger governance analysis on the fixed build."
+      operationId: ping
+      tags:
+        - Internal
+      responses:
+        "200":
+          description: pong
 components:
   securitySchemes:
     bearerAuth:
