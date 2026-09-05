@@ -1,0 +1,25 @@
+name: contract-gate
+
+on: pull_request
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  contract-gate-action:
+    name: contract-gate (Action)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # base..head must be available locally; the gate derives artifacts
+          # from the real diff rather than from the event payload.
+          fetch-depth: 0
+      - uses: coderifts/contract-gate@58c72554160e1154ad1864400487d13b89ac3cf9 # post-check-run opt-out
+        with:
+          api-key: ${{ secrets.CODERIFTS_API_KEY }}
+          # The App webhook already posts the required check under 2860592. This Action runs
+          # under the generic Actions identity (15368), so any check it posts is either a
+          # competing name or the required name from the wrong issuer.
+          post-check-run: "false"
