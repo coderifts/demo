@@ -2,7 +2,7 @@ openapi: "3.0.3"
 info:
   title: Acme API
   description: "The Acme API provides programmatic access to user management, order processing, payment handling, and webhook integrations for the Acme platform."
-  version: "1.4.0"
+  version: "1.5.0"
   contact:
     name: Acme API Team
     email: api@acme.example.com
@@ -294,6 +294,10 @@ components:
           type: string
           format: date-time
           description: "Timestamp when the account was created."
+        timezone:
+          type: string
+          nullable: true
+          description: "User's IANA timezone, e.g. America/New_York. Optional."
     CreateUserRequest:
       type: object
       description: "Request body for creating a new user account."
