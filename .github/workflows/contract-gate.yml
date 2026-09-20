@@ -1,19 +1,4 @@
-# Named-file for item 1877. NOT enabled, NOT committed.
-# Evidence (2026-09-20):
-# - main has NO .github/workflows (only .github/api-policy.yaml)
-# - Actions API: total_count 5, ALL event=pull_request, newest 2026-09-03
-# - workflow "contract-gate" state=active in the Actions catalog but the file
-#   is gone from default branch (404 on main; present on PR sha 4b2062b
-#   feat/breaking-changes-v1.5 with `on: pull_request` only — no cron)
-# - 60-day scheduled-workflow inactivity rule does NOT apply: no cron exists,
-#   and pushed_at=2026-09-06 (14 days before this measurement).
-# GitHub: "In a public repository, scheduled workflows are automatically
-# disabled when no repository activity has occurred in 60 days."
-# https://docs.github.com/en/actions/using-workflows/disabling-and-enabling-a-workflow
-#
-# Péter: commit this file to main, then `gh workflow run contract-gate` once
-# (or open a no-op PR) to prove a run after 2026-09-03. Cron cannot fire until
-# the file is on default branch.
+# The PR job runs the pinned gate action; schedule and dispatch run the keyless canary loop.
 
 name: contract-gate
 
@@ -31,6 +16,7 @@ permissions:
 jobs:
   contract-gate-action:
     name: contract-gate (Action)
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,3 +26,26 @@ jobs:
         with:
           api-key: ${{ secrets.CODERIFTS_API_KEY }}
           post-check-run: "false"
+
+  canary:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: analyze canary — a break is detected and nothing is authorized
+        run: |
+          curl -sS https://coderifts.com/examples/description-drift.json \
+            | curl -sS https://app.coderifts.com/api/v1/preflight -H 'Content-Type: application/json' -d @- \
+            | python3 -c '
+          import sys, json
+          d = json.load(sys.stdin)
+          assert d.get("analysis_outcome") == "BREAKS_DETECTED", d
+          assert d.get("may_execute") is False, d
+          assert d.get("authorization_effect") == "NONE", d
+          print("canary: BREAKS_DETECTED / may_execute:false / authorization_effect:NONE")
+          '
+      - name: unknown method is refused, by name
+        run: |
+          curl -sS -X POST https://app.coderifts.com/mcp \
+            -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+            -d '{"jsonrpc":"2.0","id":1,"method":"server/discover"}' | grep -q '\-32601' \
+            && echo "canary: -32601 named refusal"
