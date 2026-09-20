@@ -1,0 +1,42 @@
+# Named-file for item 1877. NOT enabled, NOT committed.
+# Evidence (2026-09-20):
+# - main has NO .github/workflows (only .github/api-policy.yaml)
+# - Actions API: total_count 5, ALL event=pull_request, newest 2026-09-03
+# - workflow "contract-gate" state=active in the Actions catalog but the file
+#   is gone from default branch (404 on main; present on PR sha 4b2062b
+#   feat/breaking-changes-v1.5 with `on: pull_request` only — no cron)
+# - 60-day scheduled-workflow inactivity rule does NOT apply: no cron exists,
+#   and pushed_at=2026-09-06 (14 days before this measurement).
+# GitHub: "In a public repository, scheduled workflows are automatically
+# disabled when no repository activity has occurred in 60 days."
+# https://docs.github.com/en/actions/using-workflows/disabling-and-enabling-a-workflow
+#
+# Péter: commit this file to main, then `gh workflow run contract-gate` once
+# (or open a no-op PR) to prove a run after 2026-09-03. Cron cannot fire until
+# the file is on default branch.
+
+name: contract-gate
+
+on:
+  pull_request:
+  schedule:
+    # Daily 06:17 UTC — arbitrary offset to avoid :00 stampedes.
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  contract-gate-action:
+    name: contract-gate (Action)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: coderifts/contract-gate@58c72554160e1154ad1864400487d13b89ac3cf9
+        with:
+          api-key: ${{ secrets.CODERIFTS_API_KEY }}
+          post-check-run: "false"
