@@ -1,9 +1,11 @@
-# The PR job runs the pinned gate action; schedule and dispatch run the keyless canary loop.
+# PR and merge-queue runs go through the pinned gate action; schedule and dispatch
+# run the keyless canary loop; the required aggregator turns "skipped" into a failure.
 
 name: contract-gate
 
 on:
   pull_request:
+  merge_group:
   schedule:
     # Daily 06:17 UTC — arbitrary offset to avoid :00 stampedes.
     - cron: '17 6 * * *'
@@ -16,19 +18,33 @@ permissions:
 jobs:
   contract-gate-action:
     name: contract-gate (Action)
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: coderifts/contract-gate@58c72554160e1154ad1864400487d13b89ac3cf9
+      - uses: coderifts/contract-gate@96d0b4df21e0bd81aa4fd2668e06833503a93486 # v0.10.0
         with:
           api-key: ${{ secrets.CODERIFTS_API_KEY }}
           post-check-run: "false"
 
+  contract-gate-required:
+    name: contract-gate (required)
+    needs: [contract-gate-action]
+    if: always() && (github.event_name == 'pull_request' || github.event_name == 'merge_group')
+    runs-on: ubuntu-latest
+    steps:
+      - name: the gate ran and succeeded — skipped is not success
+        run: |
+          result="${{ needs.contract-gate-action.result }}"
+          echo "contract-gate-action result: $result"
+          if [ "$result" != "success" ]; then
+            exit 1
+          fi
+
   canary:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: analyze canary — a break is detected and nothing is authorized
