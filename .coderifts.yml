@@ -48,4 +48,4 @@ cost:
 docs_paths:
   - "docs/*"
   - "README.md"
-fun_mode: true
+fun_mode: false
