@@ -39,13 +39,29 @@ freeze_periods:
     end: "2026-12-02"
     reason: "Black Friday"
 
-cost:
-  engineer_rate: 150          # $/hour (industry-standard senior rate)
-  average_migration_hours: 40 # per breaking change
-  testing_multiplier: 1.5     # testing is 1.5x development
-  currency: USD
+# cost: REMOVED 2026-09-23.
+#
+# MEASURED, and the measurement is the point: the four values here
+# (engineer_rate 150, average_migration_hours 40, testing_multiplier 1.5,
+# currency USD) are BYTE-FOR-BYTE the defaults in the app's
+# src/economic-impact.js DEFAULT_COST_CONFIG. Removing this block therefore does
+# NOT remove the $36,000 / $54,000 exposure figures from the PR comment — they
+# come straight back from those defaults. What it removes is the impression that
+# this repository chose them. The exposure claim is a product default, not a demo
+# configuration.
 
 docs_paths:
   - "docs/*"
   - "README.md"
-fun_mode: false
+
+# fun_mode: REMOVED 2026-09-23.
+#
+# MEASURED on PR #4's comment, regenerated 2026-09-23T08:59Z with fun_mode: true
+# set on BOTH this branch and main: ZERO haiku, zero fun_mode output. The flag was
+# on and rendered nothing. Removing it is comment-neutral today.
+#
+# ⚠ AND REMOVING IT HERE ALONE WOULD NOT HAVE BEEN ENOUGH even if it did render.
+# src/webhook-handler.js:193-202 MERGES fun_mode FROM THE BASE BRANCH when the HEAD
+# config does not set it — and main still carries `fun_mode: true` (measured
+# 2026-09-23: main and this branch had byte-identical configs). A PR-branch
+# removal is reverted by the base every time. main has to change too.
