@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: coderifts/contract-gate@96d0b4df21e0bd81aa4fd2668e06833503a93486 # v0.10.0
+      - uses: coderifts/contract-gate@f01c6f155f258ee9156cb2b6ef378478c6bce26e # v0.11.0
         with:
           api-key: ${{ secrets.CODERIFTS_API_KEY }}
           post-check-run: "false"
