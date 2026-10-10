@@ -11,6 +11,16 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 paths:
+  /admin/users:
+    get:
+      summary: List all users (admin)
+      description: "Administrative endpoint to list all user accounts."
+      operationId: adminListUsers
+      tags:
+        - Admin
+      responses:
+        "200":
+          description: OK
   /users/{id}:
     get:
       summary: Get user by ID
