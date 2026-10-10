@@ -65,3 +65,6 @@ docs_paths:
 # config does not set it — and main still carries `fun_mode: true` (measured
 # 2026-09-23: main and this branch had byte-identical configs). A PR-branch
 # removal is reverted by the base every time. main has to change too.
+
+engine_verdict_approvers:
+  - Mumblemanatee
