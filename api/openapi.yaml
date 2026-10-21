@@ -298,6 +298,9 @@ components:
           type: string
           nullable: true
           description: "User's IANA timezone, e.g. America/New_York. Optional."
+        locale:
+          type: string
+          description: "User's BCP 47 locale, e.g. en-US. Optional."
     CreateUserRequest:
       type: object
       description: "Request body for creating a new user account."
