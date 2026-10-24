@@ -1,0 +1,18 @@
+# Error-rate alert for the payments API (Prometheus alerting rule, Alertmanager routes on `team`).
+groups:
+  - name: payments-api
+    rules:
+      - alert: PaymentsApiHighErrorRate
+        expr: |
+          sum(rate(http_requests_total{job="payments-api", code=~"5.."}[5m]))
+            /
+          sum(rate(http_requests_total{job="payments-api"}[5m]))
+            > 0.05
+        for: 10m
+        labels:
+          severity: page
+          team: payments
+        annotations:
+          summary: "Payments API 5xx error rate above 5% for 10 minutes"
+          description: "{{ $value | humanizePercentage }} of payments-api requests returned 5xx over the last 5 minutes."
+          runbook_url: "https://coderifts.com/docs/"
