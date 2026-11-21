@@ -72,3 +72,5 @@ Full integration docs: [coderifts.com/integrations/](https://coderifts.com/integ
 - [Integrations](https://coderifts.com/integrations/)
 - [Documentation](https://coderifts.com/docs/)
 - [Pricing](https://coderifts.com/pricing/)
+
+_Pipeline layout follows the reference implementation._
