@@ -1,1 +1,1 @@
-riftseal selftest 1795279035-c13564
+riftseal selftest 1795347965-c4159d
